@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<property name="DIR_LOG" value="suportedbdc_logs" />
+	<property name="CANAL" value="bancodigital" />
+	<property name="NOME_APL" value="next_orquestrator" />
+
+<!--  ("vaquinhaCode":)  -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout class="edu.sample.common.logging.MaskingPatternLayout">
+	            <patternsProperty>("password":)|("token":)</patternsProperty>
+	            <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%mdc] %logger{36} - %msg%n</Pattern>
+        	</layout>
+		</encoder>
+	</appender>
+
+	<!--FILE-ROLLING APPENDER -->
+	<appender name="fileRolling" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>/${DIR_LOG}/${CANAL}/${NOME_APL}/${NOME_APL}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>100MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>3GB</totalSizeCap>
+		</rollingPolicy>
+		<Append>true</Append>
+		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+		<layout class="edu.sample.common.logging.MaskingPatternLayout">
+             <patternsProperty>("password":)|("token":)</patternsProperty>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level [%mdc] %logger{36} - %msg%n</Pattern>
+        </layout>
+        </encoder>
+	</appender>
+
+	<logger name="edu.sample" level="INFO" additivity="false">
+		<appender-ref ref="fileRolling" />
+	</logger>
+	
+	<logger name="edu.sample.config" level="INFO" additivity="false">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="fileRolling" />
+	</logger>
+	
+	<logger name="edu.sample.common.logging.ContextExternalPropertyFileLogger" level="INFO" additivity="false">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="fileRolling" />
+	</logger>
+	
+	<logger name="org.springframework.web.client" level="INFO" />
+	
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="fileRolling" />
+	</root>
+
+</configuration>
